@@ -1,0 +1,258 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 13% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 20%;
+
+    /* Primary: Cyan-blue for trust and reliability */
+    --primary: 195 100% 46%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 195 100% 40%;
+
+    /* Secondary: Warm orange for CTAs */
+    --secondary: 38 100% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 38 100% 45%;
+
+    /* Pet-specific colors */
+    --pet-primary: 217 91% 60%;
+    --pet-secondary: 142 71% 45%;
+    --pet-accent: 270 100% 60%;
+
+    /* Success: Green for positive actions */
+    --success: 140 65% 45%;
+    --success-foreground: 0 0% 100%;
+    --success-hover: 140 65% 40%;
+
+    /* Alert: Red for urgent actions */
+    --alert: 0 85% 60%;
+    --alert-foreground: 0 0% 100%;
+    --alert-hover: 0 85% 55%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 50%;
+
+    --accent: 195 100% 95%;
+    --accent-foreground: 195 100% 30%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 195 100% 46%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 220 20% 10%;
+    --foreground: 0 0% 95%;
+
+    --card: 220 20% 12%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 220 20% 12%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 195 100% 46%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 195 100% 50%;
+
+    --secondary: 38 100% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 38 100% 55%;
+
+    --success: 140 65% 45%;
+    --success-foreground: 0 0% 100%;
+    --success-hover: 140 65% 50%;
+
+    --alert: 0 85% 60%;
+    --alert-foreground: 0 0% 100%;
+    --alert-hover: 0 85% 65%;
+
+    --muted: 220 20% 20%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 195 100% 20%;
+    --accent-foreground: 195 100% 80%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --ring: 195 100% 50%;
+    
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background-color: white;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  html {
+    background-color: white;
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  /* Header glass effect */
+  .header-glass {
+    @apply bg-white/95 backdrop-blur-md border-b border-gray-200/50;
+  }
+
+  /* Custom shadow utilities */
+  .shadow-soft {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .shadow-elegant {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* RTL Support */
+  [dir="rtl"] {
+    direction: rtl;
+  }
+
+  [dir="ltr"] {
+    direction: ltr;
+  }
+
+  /* RTL-specific adjustments */
+  [dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+  }
+
+  [dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+    margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
+  [dir="rtl"] .space-x-3 > :not([hidden]) ~ :not([hidden]) {
+    margin-right: calc(0.75rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
+  /* RTL text alignment */
+  [dir="rtl"] .text-left {
+    text-align: right;
+  }
+
+  [dir="rtl"] .text-right {
+    text-align: left;
+  }
+
+  /* RTL margin and padding adjustments */
+  [dir="rtl"] .ml-4 {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
+
+  [dir="rtl"] .mr-2 {
+    margin-right: 0;
+    margin-left: 0.5rem;
+  }
+
+  [dir="rtl"] .mr-3 {
+    margin-right: 0;
+    margin-left: 0.75rem;
+  }
+
+  [dir="rtl"] .ml-1 {
+    margin-left: 0;
+    margin-right: 0.25rem;
+  }
+
+  [dir="rtl"] .ml-4 {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
+
+  /* RTL flex direction adjustments */
+  [dir="rtl"] .flex-row-reverse {
+    flex-direction: row-reverse;
+  }
+
+  /* RTL positioning adjustments */
+  [dir="rtl"] .left-3 {
+    left: auto;
+    right: 0.75rem;
+  }
+
+  [dir="rtl"] .right-3 {
+    right: auto;
+    left: 0.75rem;
+  }
+
+  [dir="rtl"] .right-0 {
+    right: auto;
+    left: 0;
+  }
+
+  [dir="rtl"] .origin-left {
+    transform-origin: right;
+  }
+
+  /* RTL border adjustments */
+  [dir="rtl"] .border-l {
+    border-left: none;
+    border-right: 1px solid;
+  }
+
+  [dir="rtl"] .border-r {
+    border-right: none;
+    border-left: 1px solid;
+  }
+
+  /* RTL transform adjustments */
+  [dir="rtl"] .scale-x-0 {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+
+  [dir="rtl"] .scale-x-100 {
+    transform: scaleX(1);
+    transform-origin: right;
+  }
+}
