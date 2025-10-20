@@ -23,7 +23,7 @@ const FindSearchs: React.FC = () => {
   };
 
   return (
-    <section className="py-8 bg-white border-b">
+    <section className="pt-6 pb-8 bg-white border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex flex-col md:flex-row gap-4 items-center justify-between ${isRTL ? 'rtl' : 'ltr'}`}>
           {/* Location Controls */}

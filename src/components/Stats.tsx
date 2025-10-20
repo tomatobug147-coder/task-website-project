@@ -15,9 +15,7 @@ const Stats = () => {
           <p className="text-muted-foreground text-sm md:text-base">
             {t('stats.subtitle')}
           </p>
-          <div className="mt-6 flex justify-center">
-            <LanguageToggle />
-          </div>
+         
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">

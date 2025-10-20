@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Facebook,
   Instagram,
@@ -17,6 +17,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -61,19 +62,30 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-3 text-gray-300">
                 <Building2 className="h-4 w-4 text-blue-400" />
-                <span>{t('footer.professionalMicrochipping')}</span>
+                <span onClick={() => { navigate('/about'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors cursor-pointer">
+                {t('footer.professionalMicrochipping')}
+                </span>
               </li>
               <li className="flex items-center gap-3 text-gray-300">
+                
                 <Database className="h-4 w-4 text-green-400" />
-                <span>{t('footer.databaseRegistry')}</span>
+                <span onClick={() => { navigate('/about'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors cursor-pointer">
+                {t('footer.databaseRegistry')}
+                </span>
               </li>
               <li className="flex items-center gap-3 text-gray-300">
+               
                 <Plus className="h-4 w-4 text-yellow-400" />
-                <span>{t('footer.petRegistration')}</span>
+                 <span onClick={() => { navigate('/registerpet'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors cursor-pointer">
+                {t('footer.petRegistration')}
+                </span>
               </li>
               <li className="flex items-center gap-3 text-gray-300">
+                
                 <Search className="h-4 w-4 text-purple-400" />
-                <span>{t('footer.microchipSearch')}</span>
+                <span onClick={() => { navigate('/search'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors cursor-pointer">
+                {t('footer.microchipSearch')}
+                </span>
               </li>
             </ul>
           </div>
@@ -87,27 +99,27 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-3 text-gray-300">
                 <Plus className="h-4 w-4 text-blue-400" />
-                <Link to="/register" className="hover:text-white transition-colors">
+                <span onClick={() => { navigate('/registerpet'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors cursor-pointer">
                   {t('footer.registerYourPet')}
-                </Link>
+                </span>
               </li>
               <li className="flex items-center gap-3 text-gray-300">
                 <AlertTriangle className="h-4 w-4 text-red-400" />
-                <Link to="/report-lost" className="hover:text-white transition-colors">
+                <span onClick={() => { navigate('/lostfound'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors cursor-pointer">
                   {t('footer.reportLostPet')}
-                </Link>
+                </span>
               </li>
               <li className="flex items-center gap-3 text-gray-300">
                 <Search className="h-4 w-4 text-green-400" />
-                <Link to="/search-found" className="hover:text-white transition-colors">
+                <span onClick={() => { navigate('/search'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors cursor-pointer">
                   {t('footer.searchFoundPet')}
-                </Link>
+                </span>
               </li>
               <li className="flex items-center gap-3 text-gray-300">
                 <Heart className="h-4 w-4 text-pink-400" />
-                <Link to="/success-stories" className="hover:text-white transition-colors">
+                <span onClick={() => { navigate('/successstories'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors cursor-pointer">
                   {t('footer.successStories')}
-                </Link>
+                </span>
               </li>
             </ul>
           </div>
@@ -116,14 +128,18 @@ const Footer = () => {
           <div>
             <h3 className="font-bold text-white mb-4 relative">
               {t('footer.support247')}
+              
               <div className="absolute bottom-0 left-0 w-8 h-0.5 bg-cyan-400"></div>
+              
             </h3>
 
             {/* Email Contact */}
             <div className="mb-4">
               <div className="flex items-center gap-2 text-gray-300 mb-1">
                 <Mail className="h-4 w-4 text-blue-400" />
+                <Link to="mailto:Info@chipthem.com" className="hover:text-white transition-colors">
                 <span>{t('footer.supportEmail')}</span>
+                </Link>
               </div>
               <p className="text-xs text-gray-400 ml-6">{t('footer.generalInquiries')}</p>
             </div>
@@ -132,7 +148,9 @@ const Footer = () => {
             <div className="mb-6">
               <div className="flex items-center gap-2 text-gray-300 mb-1">
                 <Phone className="h-4 w-4 text-green-400" />
+                <Link to="tel:+962-7-98-980504" className="hover:text-white transition-colors">
                 <span>{t('footer.supportPhone')}</span>
+                </Link>
               </div>
               <div className="text-xs text-gray-400 ml-6">
                 <p>{t('footer.hoursSatThu')}</p>
@@ -144,10 +162,10 @@ const Footer = () => {
             <div>
               <h4 className="font-bold text-white mb-3">{t('footer.followUs')}</h4>
               <div className="flex gap-3">
-                <a href="#" className="w-8 h-8 rounded bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-colors">
+                <a href="https://www.instagram.com/chipthem.jo?igsh=YnVnd2hkODJkMWVq" className="w-8 h-8 rounded bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-colors">
                   <Instagram className="h-4 w-4 text-white" />
                 </a>
-                <a href="#" className="w-8 h-8 rounded bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-colors">
+                <a href="https://www.facebook.com/share/17HX8wVHuN/" className="w-8 h-8 rounded bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-colors">
                   <Facebook className="h-4 w-4 text-white" />
                 </a>
               </div>

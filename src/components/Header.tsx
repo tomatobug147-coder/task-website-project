@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Header = () => {
   const location = useLocation();
@@ -20,41 +21,38 @@ const Header = () => {
 
   const targetLang = language === 'en' ? t('common.toArabic') : t('common.toEnglish');
 
-  const LanguageButton = () => (
-    <button
-      onClick={toggleLanguage}
-      disabled={isTransitioning}
-      className={`
-        group relative flex items-center justify-center px-4 py-2 rounded-lg
-        bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700
-        text-white shadow-lg hover:shadow-xl transition-all duration-300
-        hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2
-        ${isRTL ? 'ml-3' : 'mr-3'} ${isTransitioning ? 'opacity-75 cursor-not-allowed' : ''}
-      `}
-      aria-label={`${t('common.convert')} to ${targetLang}`}
-      title={`${t('common.convert')} to ${targetLang}`}
-    >
-      {/* Conversion text */}
-      <span className="text-sm font-medium">
-        {t('common.convert')} to {targetLang}
-      </span>
-
-      {/* Animated background */}
-      <div className="absolute inset-0 rounded-lg bg-white/20 scale-0 group-hover:scale-100 transition-transform duration-300" />
-
-      {/* RTL indicator dot */}
-      {isRTL && (
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full border-2 border-white animate-pulse" />
-      )}
-
-      {/* Converting overlay */}
-      {isTransitioning && (
-        <div className="absolute inset-0 rounded-lg bg-white/30 flex items-center justify-center">
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
-    </button>
-  );
+  const LanguageSelect = () => {
+    return (
+      <Select value={language} onValueChange={setLanguage} disabled={isTransitioning}>
+        <SelectTrigger
+          className={`
+            w-[140px] h-10 px-3 py-2 rounded-lg
+            bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700
+            text-white shadow-lg hover:shadow-xl transition-all duration-300
+            hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2
+            fixed top-4 right-4 z-[60]
+            ${isTransitioning ? 'opacity-75 cursor-not-allowed' : ''}
+          `}
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="en">
+            <div className="flex items-center">
+              <span className="mr-2">🇺🇸</span>
+              English
+            </div>
+          </SelectItem>
+          <SelectItem value="ar">
+            <div className="flex items-center">
+              <span className="mr-2">🇸🇦</span>
+              العربية
+            </div>
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    );
+  };
 
   // Refs for dropdown containers
   const registerRef = useRef<HTMLDivElement>(null);
@@ -84,10 +82,6 @@ const Header = () => {
 
   return (
     <nav key={language} className={`header-glass fixed top-0 z-50 shadow-soft w-full ${isRTL ? 'rtl' : 'ltr'}`}>
-      {/* Desktop Language Toggle - Fixed Top Left */}
-      <div className="absolute top-4 left-4 z-50 hidden lg:block">
-        <LanguageButton />
-      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex justify-between items-center h-20 ${isRTL ? 'flex-row-reverse' : ''}`}>
           {/* Logo */}
@@ -156,6 +150,9 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
+            {/* Language Select */}
+            <LanguageSelect />
+
             {/* Register Dropdown */}
             <div className="relative" ref={registerRef}>
               <button
@@ -367,7 +364,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <div className={`lg:hidden flex items-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
             {/* Mobile Language Toggle */}
-            <LanguageButton />
+            <LanguageSelect />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="p-2 rounded-lg text-gray-600 hover:text-pet-primary hover:bg-gray-100 transition-all duration-300 focus:outline-none"

@@ -194,7 +194,7 @@ const VLog: React.FC = () => {
             {/* Register Link */}
             <div className="text-center">
               <a
-                href="contact.php?subject=clinic"
+                href="/contact?subject=clinic"
                 className={`inline-flex items-center text-pet-secondary hover:text-green-600 transition-colors font-semibold ${isRTL ? 'flex-row-reverse' : ''}`}
               >
                 <svg className={`w-5 h-5 ${isRTL ? 'ml-2' : 'mr-2'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">

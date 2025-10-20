@@ -1,8 +1,14 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const VeterinaryClinicRegistration: React.FC = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -47,10 +53,11 @@ const VeterinaryClinicRegistration: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // Process form submission logic here, e.g., API call
+    navigate('/registersuccessvet');
   };
 
   return (
-    <section className="py-16">
+    <section className="pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Form Header */}

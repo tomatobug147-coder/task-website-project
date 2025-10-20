@@ -68,7 +68,10 @@ const QuickActions = () => {
                     {action.description}
                   </CardDescription>
                   <Button
-                    onClick={() => navigate(action.route)}
+                    onClick={() => {
+                      navigate(action.route);
+                      window.scrollTo(0, 0);
+                    }}
                     className={`w-full text-white font-medium rounded-lg ${action.buttonBg}`}
                   >
                     {action.buttonText}

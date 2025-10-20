@@ -41,7 +41,10 @@ const AboutProvenResults: React.FC = () => {
                   </div>
                 </div>
                 <Button
-                  onClick={() => navigate('/registerpet')}
+                  onClick={() => {
+                    navigate('/registerpet');
+                    window.scrollTo(0, 0);
+                  }}
                   className="w-full bg-blue-400 text-white py-3 rounded-lg font-semibold hover:bg-blue-500 transition-colors"
                 >
                   {t('pricing.basic.button')}
@@ -85,7 +88,10 @@ const AboutProvenResults: React.FC = () => {
                     </div>
                   </div>
                   <Button
-                    onClick={() => navigate('/registerpet')}
+                    onClick={() => {
+                      navigate('/registerpet');
+                      window.scrollTo(0, 0);
+                    }}
                     className="w-full bg-blue-400 text-white py-3 rounded-lg font-semibold hover:bg-blue-500 transition-colors"
                   >
                     {t('pricing.complete.button')}
@@ -124,7 +130,10 @@ const AboutProvenResults: React.FC = () => {
                   </div>
                 </div>
                 <Button
-                  onClick={() => navigate('/contact')}
+                  onClick={() => {
+                    navigate('/contact');
+                    window.scrollTo(0, 0);
+                  }}
                   className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
                 >
                   {t('pricing.home.button')}

@@ -1,23 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Home, BookOpen, Lightbulb } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useNavigate } from "react-router-dom";
+
+
 
 const MicrochipPromo = () => {
+  const navigate = useNavigate();
   const { t, isRTL, setLanguage } = useLanguage();
   return (
     <section className={`py-20 bg-green-600 ${isRTL ? 'rtl' : 'ltr'}`}>
       <div className="container mx-auto px-4 text-white">
         <div className={`max-w-4xl mx-auto text-center ${isRTL ? 'rtl' : 'ltr'}`}>
-          {/* Language Convert Button */}
-          <div className="mb-8">
-            <Button
-              onClick={() => setLanguage(isRTL ? 'en' : 'ar')}
-              size="lg"
-              className="bg-white/20 hover:bg-white/30 text-white border border-white/30 hover:border-white/50 shadow-lg rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-xl font-semibold backdrop-blur-sm"
-            >
-              🌐 Convert to {isRTL ? 'English' : 'Arabic'}
-            </Button>
-          </div>
+         
           
           {/* Main Heading */}
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
@@ -49,16 +44,18 @@ const MicrochipPromo = () => {
 
           {/* Call to Action Buttons */}
           <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
-            <Button 
-              size="lg" 
+            <Button
+              onClick={() => { navigate('/registerpet'); window.scrollTo(0, 0); }}
+              size="lg"
               className="w-[280px] h-[56px] bg-white hover:bg-gray-50 text-green-600 hover:text-green-700 border-0 shadow-lg rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-xl font-semibold"
             >
               <Home className={`${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5`} />
               {t('microchipPromo.registerPetNow')}
             </Button>
             
-            <Button 
-              size="lg" 
+            <Button
+              onClick={() => { navigate('/about'); window.scrollTo(0, 0); }}
+              size="lg"
               className="w-[280px] h-[56px] bg-green-700 hover:bg-green-800 text-white hover:text-white border-0 shadow-lg rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-xl font-semibold"
             >
               <BookOpen className={`${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5`} />

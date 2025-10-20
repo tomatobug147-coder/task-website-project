@@ -6,12 +6,12 @@ const SuccessStoriesMore: React.FC = () => {
 
   const stories = [
     {
-      name: t('successStoriesMore.bella.name'),
-      breed: t('successStoriesMore.bella.breed'),
-      time: t('successStoriesMore.bella.time'),
+      name: t('successStoriesMore.Samur.name'),
+      breed: t('successStoriesMore.Samur.breed'),
+      time: t('successStoriesMore.Samur.time'),
       imgSrc: "https://pet-microchip-system.mrehman.com/assets/images/labrador.jpg",
-      story: t('successStoriesMore.bella.story'),
-      author: t('successStoriesMore.bella.author'),
+      story: t('successStoriesMore.Samur.story'),
+      author: t('successStoriesMore.Samur.author'),
     },
     {
       name: t('successStoriesMore.whiskers.name'),
@@ -46,12 +46,12 @@ const SuccessStoriesMore: React.FC = () => {
       author: t('successStoriesMore.charlie.author'),
     },
     {
-      name: t('successStoriesMore.sunny.name'),
-      breed: t('successStoriesMore.sunny.breed'),
-      time: t('successStoriesMore.sunny.time'),
+      name: t('successStoriesMore.Zatar.name'),
+      breed: t('successStoriesMore.Zatar.breed'),
+      time: t('successStoriesMore.Zatar.time'),
       imgSrc: "https://pet-microchip-system.mrehman.com/assets/images/Sunny.jpg",
-      story: t('successStoriesMore.sunny.story'),
-      author: t('successStoriesMore.sunny.author'),
+      story: t('successStoriesMore.Zatar.story'),
+      author: t('successStoriesMore.Zatar.author'),
     },
   ];
 

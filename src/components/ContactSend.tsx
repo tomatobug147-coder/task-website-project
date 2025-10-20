@@ -183,7 +183,7 @@ const ContactSection: React.FC = () => {
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-gray-600 font-semibold">{t('contact.emailSupport')}</p>
-                  <a href="mailto:support@chipthem.com" className="text-pet-primary hover:text-blue-600">
+                  <a href="mailto:Info@chipthem.com" className="text-pet-primary hover:text-blue-600">
                     {t('contact.supportEmail')}
                   </a>
                 </div>
@@ -213,19 +213,19 @@ const ContactSection: React.FC = () => {
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h3 className="text-lg font-bold text-gray-800 mb-4">{t('contact.quickHelp')}</h3>
               <div className="space-y-2">
-                <a href="search.php" className="block text-sm text-pet-primary hover:text-blue-600">
+                <a href="/search" className="block text-sm text-pet-primary hover:text-blue-600">
                   {t('contact.searchFoundPet')}
                 </a>
-                <a href="lost-found.php" className="block text-sm text-pet-primary hover:text-blue-600">
+                <a href="/lostfound" className="block text-sm text-pet-primary hover:text-blue-600">
                   {t('contact.reportLostPet')}
                 </a>
-                <a href="register.php" className="block text-sm text-pet-primary hover:text-blue-600">
+                <a href="/registerpet" className="block text-sm text-pet-primary hover:text-blue-600">
                   {t('contact.registerPet')}
                 </a>
-                <a href="find-clinic.php" className="block text-sm text-pet-primary hover:text-blue-600">
+                <a href="/findclinic" className="block text-sm text-pet-primary hover:text-blue-600">
                   {t('contact.findClinic')}
                 </a>
-                <a href="about.php" className="block text-sm text-pet-primary hover:text-blue-600">
+                <a href="/about" className="block text-sm text-pet-primary hover:text-blue-600">
                   {t('contact.learnAboutChips')}
                 </a>
               </div>

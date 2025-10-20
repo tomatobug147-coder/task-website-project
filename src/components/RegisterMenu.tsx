@@ -1,8 +1,11 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
-import axios from "axios";
+import React, { useState, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const PetRegistrationForm: React.FC = () => {
-  const [form, setForm] = useState({
+const RegisterMenu: React.FC = () => {
+  const navigate = useNavigate();
+  const { t, setLanguage, language } = useLanguage();
+  const [formData, setFormData] = useState({
     full_name: "",
     national_id: "",
     email: "",
@@ -36,257 +39,215 @@ const PetRegistrationForm: React.FC = () => {
   });
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    let newValue: string | boolean = value;
-    if ('checked' in e.target && 'type' in e.target && e.target.type === 'checkbox') {
-      newValue = e.target.checked;
-    }
-    setForm((prev) => ({
+    const target = e.target as HTMLInputElement;
+    const { name, value, type } = target;
+    const checked = target.checked;
+    setFormData((prev) => ({
       ...prev,
-      [name]: newValue,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    // console.log("hello")
-  e.preventDefault();
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    // Handle form submission, e.g., send to API or PHP endpoint
+    console.log("Form submitted:", formData);
+    // Navigate to success page
+    navigate("/registersuccess");
+  };
 
-  try {
-    const response = await axios.post("https://localhost:5000/api/register", form);
-    console.log("Form submitted successfully:", response.data);
-    alert("Pet registration completed successfully!");
-    // Optionally reset form or redirect
-    setForm({
-      full_name: "",
-      national_id: "",
-      email: "",
-      password: "",
-      confirm_password: "",
-      phone: "",
-      alt_phone: "",
-      address: "",
-      city: "",
-      country: "",
-      microchip_number: "",
-      pet_name: "",
-      pet_type: "",
-      breed: "",
-      pet_sex: "",
-      pet_color: "",
-      pet_age: "",
-      pet_weight: "",
-      special_markings: "",
-      vet_clinic: "",
-      vet_phone: "",
-      microchip_date: "",
-      microchip_location: "",
-      emergency_name: "",
-      emergency_phone: "",
-      emergency_relationship: "",
-      terms_agree: false,
-      info_accurate: false,
-      pet_ownership: false,
-      email_updates: false,
-    });
-  } catch (error: any) {
-    console.error("Error submitting form:", error.response?.data || error.message);
-    alert("Failed to submit the form. Please try again.");
-  }
-};
-
+  const handleLanguageChange = () => {
+    setLanguage(language === 'en' ? 'ar' : 'en');
+  };
 
   return (
-    <section className="py-16">
+    <section className="pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Form Header */}
           <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-8 py-6 border-b">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Pet Registration Form</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              {t('registerMenu.title')}
+            </h2>
             <p className="text-gray-600">
-              Please fill out all required information for both you and your pet
+              {t('registerMenu.subtitle')}
             </p>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="px-8 py-8" noValidate>
             {/* Owner Information Section */}
             <div className="mb-12">
               <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
-                <span className="bg-pet-primary text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">1</span>
-                Owner Information
+                <span className="bg-pet-primary text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">
+                  1
+                </span>
+                {t('registerMenu.ownerInfo')}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Full Name */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="full_name">
-                    Full Name *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.fullName')}
                   </label>
                   <input
                     type="text"
-                    id="full_name"
                     name="full_name"
-                    value={form.full_name}
-                    onChange={handleChange}
                     required
-                    placeholder="Enter your full name"
+                    value={formData.full_name}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.fullNamePlaceholder')}
                   />
                 </div>
 
                 {/* National ID Number */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="national_id">
-                    National ID Number *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.nationalId')}
                   </label>
                   <input
                     type="text"
-                    id="national_id"
                     name="national_id"
-                    value={form.national_id}
-                    onChange={handleChange}
                     required
-                    placeholder="Enter your national ID number"
+                    value={formData.national_id}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.nationalIdPlaceholder')}
                   />
-                  <p className="text-sm text-gray-500 mt-1">Required for identity verification</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {t('registerMenu.nationalIdNote')}
+                  </p>
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="email">
-                    Email Address *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.email')}
                   </label>
                   <input
                     type="email"
-                    id="email"
                     name="email"
-                    value={form.email}
-                    onChange={handleChange}
                     required
-                    placeholder="your.email@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.emailPlaceholder')}
                   />
                 </div>
 
                 {/* Password */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="password">
-                    Password *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.password')}
                   </label>
                   <input
                     type="password"
-                    id="password"
                     name="password"
-                    value={form.password}
-                    onChange={handleChange}
                     required
                     minLength={8}
-                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.passwordPlaceholder')}
                   />
-                  <p className="text-sm text-gray-500 mt-1">Minimum 8 characters</p>
+                  <p className="text-sm text-gray-500 mt-1">{t('registerMenu.passwordNote')}</p>
                 </div>
 
                 {/* Confirm Password */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="confirm_password">
-                    Confirm Password *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.confirmPassword')}
                   </label>
                   <input
                     type="password"
-                    id="confirm_password"
                     name="confirm_password"
-                    value={form.confirm_password}
-                    onChange={handleChange}
                     required
                     minLength={8}
-                    placeholder="••••••••"
+                    value={formData.confirm_password}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.confirmPasswordPlaceholder')}
                   />
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="phone">
-                    Phone Number *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.phone')}
                   </label>
                   <input
                     type="tel"
-                    id="phone"
                     name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
                     required
-                    placeholder="(555) 123-4567"
+                    value={formData.phone}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.phonePlaceholder')}
                   />
                 </div>
 
                 {/* Alternative Phone */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="alt_phone">
-                    Alternative Phone
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.altPhone')}
                   </label>
                   <input
                     type="tel"
-                    id="alt_phone"
                     name="alt_phone"
-                    value={form.alt_phone}
+                    value={formData.alt_phone}
                     onChange={handleChange}
-                    placeholder="(555) 987-6543"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.altPhonePlaceholder')}
                   />
                 </div>
 
                 {/* Address */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="address">
-                    Street Address *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.address')}
                   </label>
                   <input
                     type="text"
-                    id="address"
                     name="address"
-                    value={form.address}
-                    onChange={handleChange}
                     required
-                    placeholder="123 Main Street"
+                    value={formData.address}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.addressPlaceholder')}
                   />
                 </div>
 
                 {/* City */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="city">
-                    City *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.city')}
                   </label>
                   <input
                     type="text"
-                    id="city"
                     name="city"
-                    value={form.city}
-                    onChange={handleChange}
                     required
-                    placeholder="Enter city"
+                    value={formData.city}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.cityPlaceholder')}
                   />
                 </div>
 
                 {/* Country */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="country">
-                    Country *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.country')}
                   </label>
                   <input
                     type="text"
-                    id="country"
                     name="country"
-                    value={form.country}
-                    onChange={handleChange}
                     required
-                    placeholder="Enter Country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    placeholder={t('registerMenu.countryPlaceholder')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   />
                 </div>
@@ -296,175 +257,167 @@ const PetRegistrationForm: React.FC = () => {
             {/* Pet Information Section */}
             <div className="mb-12">
               <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
-                <span className="bg-pet-secondary text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">2</span>
-                Pet Information
+                <span className="bg-pet-secondary text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">
+                  2
+                </span>
+                {t('registerMenu.petInfo')}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Microchip Number */}
                 <div className="md:col-span-2">
-                  <label
-                    className="block text-sm font-semibold text-gray-700 mb-2"
-                    htmlFor="microchip_number"
-                  >
-                    Microchip Number *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.microchipNumber')}
                   </label>
                   <input
                     type="text"
-                    id="microchip_number"
                     name="microchip_number"
-                    value={form.microchip_number}
-                    onChange={handleChange}
                     required
                     maxLength={15}
                     pattern="\d{15}"
-                    placeholder="123456789012345"
+                    value={formData.microchip_number}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200 font-mono text-lg"
+                    placeholder="123456789012345"
                   />
-                  <p className="text-sm text-gray-500 mt-1">15-digit number found on microchip paperwork</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {t('registerMenu.microchipNumberNote')}
+                  </p>
                 </div>
 
                 {/* Pet Name */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="pet_name">
-                    Pet Name *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.petName')}
                   </label>
                   <input
                     type="text"
-                    id="pet_name"
                     name="pet_name"
-                    value={form.pet_name}
-                    onChange={handleChange}
                     required
-                    placeholder="Enter pet's name"
+                    value={formData.pet_name}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.petNamePlaceholder')}
                   />
                 </div>
 
                 {/* Pet Type */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="pet_type">
-                    Pet Type *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.petType')}
                   </label>
                   <select
-                    id="pet_type"
                     name="pet_type"
-                    value={form.pet_type}
-                    onChange={handleChange}
                     required
+                    value={formData.pet_type}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   >
-                    <option value="">Select Pet Type</option>
-                    <option value="Dog">Dog</option>
-                    <option value="Cat">Cat</option>
-                    <option value="Bird">Bird</option>
-                    <option value="Rabbit">Rabbit</option>
-                    <option value="Ferret">Ferret</option>
-                    <option value="Other">Other</option>
+                    <option value="">{t('registerMenu.selectPetType')}</option>
+                    <option value="Dog">{t('registerMenu.dog')}</option>
+                    <option value="Cat">{t('registerMenu.cat')}</option>
+                    <option value="Bird">{t('registerMenu.bird')}</option>
+                    <option value="Rabbit">{t('registerMenu.rabbit')}</option>
+                    <option value="Ferret">{t('registerMenu.ferret')}</option>
+                    <option value="Other">{t('registerMenu.other')}</option>
                   </select>
                 </div>
 
                 {/* Breed */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="breed">
-                    Breed *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.breed')}
                   </label>
                   <input
                     type="text"
-                    id="breed"
                     name="breed"
-                    value={form.breed}
-                    onChange={handleChange}
                     required
-                    placeholder="e.g., Golden Retriever, Mixed Breed"
+                    value={formData.breed}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.breedPlaceholder')}
                   />
                 </div>
 
                 {/* Sex */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="pet_sex">
-                    Sex *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.sex')}
                   </label>
                   <select
-                    id="pet_sex"
                     name="pet_sex"
-                    value={form.pet_sex}
-                    onChange={handleChange}
                     required
+                    value={formData.pet_sex}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   >
-                    <option value="">Select Sex</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Male - Neutered">Male - Neutered</option>
-                    <option value="Female - Spayed">Female - Spayed</option>
+                    <option value="">{t('registerMenu.selectSex')}</option>
+                    <option value="Male">{t('registerMenu.male')}</option>
+                    <option value="Female">{t('registerMenu.female')}</option>
+                    <option value="Male - Neutered">{t('registerMenu.maleNeutered')}</option>
+                    <option value="Female - Spayed">{t('registerMenu.femaleSpayed')}</option>
                   </select>
                 </div>
 
                 {/* Color */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="pet_color">
-                    Primary Color *
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.primaryColor')}
                   </label>
                   <input
                     type="text"
-                    id="pet_color"
                     name="pet_color"
-                    value={form.pet_color}
-                    onChange={handleChange}
                     required
-                    placeholder="e.g., Golden, Black, Brown &amp; White"
+                    value={formData.pet_color}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder="e.g., Golden, Black, Brown &amp; White"
                   />
                 </div>
 
                 {/* Age */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="pet_age">
-                    Age
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.age')}
                   </label>
                   <input
                     type="text"
-                    id="pet_age"
                     name="pet_age"
-                    value={form.pet_age}
+                    value={formData.pet_age}
                     onChange={handleChange}
-                    placeholder="e.g., 3 years, 6 months"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.agePlaceholder')}
                   />
                 </div>
 
                 {/* Weight */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="pet_weight">
-                    Weight
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.weight')}
                   </label>
                   <input
                     type="text"
-                    id="pet_weight"
                     name="pet_weight"
-                    value={form.pet_weight}
+                    value={formData.pet_weight}
                     onChange={handleChange}
-                    placeholder="e.g., 65 lbs, 8 kg"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.weightPlaceholder')}
                   />
                 </div>
 
                 {/* Special Markings */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="special_markings">
-                    Special Markings or Features
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.specialMarkings')}
                   </label>
                   <textarea
-                    id="special_markings"
                     name="special_markings"
                     rows={3}
-                    value={form.special_markings}
+                    value={formData.special_markings}
                     onChange={handleChange}
-                    placeholder="Describe any unique markings, scars, or distinguishing features"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
-                  />
+                    placeholder={t('registerMenu.specialMarkingsPlaceholder')}
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -472,53 +425,52 @@ const PetRegistrationForm: React.FC = () => {
             {/* Veterinary Information */}
             <div className="mb-12">
               <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
-                <span className="bg-pet-accent text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">3</span>
-                Veterinary Information
+                <span className="bg-pet-accent text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">
+                  3
+                </span>
+                {t('registerMenu.vetInfo')}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Vet Clinic Name */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="vet_clinic">
-                    Veterinary Clinic Name
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.vetClinicName')}
                   </label>
                   <input
                     type="text"
-                    id="vet_clinic"
                     name="vet_clinic"
-                    value={form.vet_clinic}
+                    value={formData.vet_clinic}
                     onChange={handleChange}
-                    placeholder="Enter clinic name"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.vetClinicPlaceholder')}
                   />
                 </div>
 
                 {/* Vet Phone */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="vet_phone">
-                    Veterinary Phone
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.vetPhone')}
                   </label>
                   <input
                     type="tel"
-                    id="vet_phone"
                     name="vet_phone"
-                    value={form.vet_phone}
+                    value={formData.vet_phone}
                     onChange={handleChange}
-                    placeholder="(555) 123-4567"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.vetPhonePlaceholder')}
                   />
                 </div>
 
                 {/* Microchip Date */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="microchip_date">
-                    Microchip Implant Date
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.microchipDate')}
                   </label>
                   <input
                     type="date"
-                    id="microchip_date"
                     name="microchip_date"
-                    value={form.microchip_date}
+                    value={formData.microchip_date}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   />
@@ -526,21 +478,22 @@ const PetRegistrationForm: React.FC = () => {
 
                 {/* Microchip Location */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="microchip_location">
-                    Microchip Location
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.microchipLocation')}
                   </label>
                   <select
-                    id="microchip_location"
                     name="microchip_location"
-                    value={form.microchip_location}
+                    value={formData.microchip_location}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   >
-                    <option value="">Select Location</option>
-                    <option value="Between shoulder blades">Between shoulder blades</option>
-                    <option value="Left shoulder blade">Left shoulder blade</option>
-                    <option value="Right shoulder blade">Right shoulder blade</option>
-                    <option value="Other">Other</option>
+                    <option value="">{t('registerMenu.selectLocation')}</option>
+                    <option value="Between shoulder blades">
+                      {t('registerMenu.betweenShoulderBlades')}
+                    </option>
+                    <option value="Left shoulder blade">{t('registerMenu.leftShoulderBlade')}</option>
+                    <option value="Right shoulder blade">{t('registerMenu.rightShoulderBlade')}</option>
+                    <option value="Other">{t('registerMenu.other')}</option>
                   </select>
                 </div>
               </div>
@@ -549,56 +502,55 @@ const PetRegistrationForm: React.FC = () => {
             {/* Emergency Contact */}
             <div className="mb-12">
               <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
-                <span className="bg-purple-500 text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">4</span>
-                Emergency Contact (Optional)
+                <span className="bg-purple-500 text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">
+                  4
+                </span>
+                {t('registerMenu.emergencyContact')}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Emergency Contact Name */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="emergency_name">
-                    Emergency Contact Name
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.emergencyName')}
                   </label>
                   <input
                     type="text"
-                    id="emergency_name"
                     name="emergency_name"
-                    value={form.emergency_name}
+                    value={formData.emergency_name}
                     onChange={handleChange}
-                    placeholder="Enter emergency contact name"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.emergencyNamePlaceholder')}
                   />
                 </div>
 
                 {/* Emergency Contact Phone */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="emergency_phone">
-                    Emergency Contact Phone
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.emergencyPhone')}
                   </label>
                   <input
                     type="tel"
-                    id="emergency_phone"
                     name="emergency_phone"
-                    value={form.emergency_phone}
+                    value={formData.emergency_phone}
                     onChange={handleChange}
-                    placeholder="(555) 123-4567"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.emergencyPhonePlaceholder')}
                   />
                 </div>
 
                 {/* Relationship */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="emergency_relationship">
-                    Relationship to Pet Owner
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {t('registerMenu.relationship')}
                   </label>
                   <input
                     type="text"
-                    id="emergency_relationship"
                     name="emergency_relationship"
-                    value={form.emergency_relationship}
+                    value={formData.emergency_relationship}
                     onChange={handleChange}
-                    placeholder="e.g., Family member, Friend, Neighbor"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
+                    placeholder={t('registerMenu.relationshipPlaceholder')}
                   />
                 </div>
               </div>
@@ -607,80 +559,77 @@ const PetRegistrationForm: React.FC = () => {
             {/* Terms and Agreement */}
             <div className="mb-8">
               <div className="bg-gray-50 rounded-lg p-6 border">
-                <h4 className="font-semibold text-gray-800 mb-4">Terms and Agreement</h4>
+                <h4 className="font-semibold text-gray-800 mb-4">
+                  {t('registerMenu.termsTitle')}
+                </h4>
                 <div className="space-y-3">
-                  <label className="flex items-start" htmlFor="terms_agree">
+                  <label className="flex items-start">
                     <input
                       type="checkbox"
-                      id="terms_agree"
                       name="terms_agree"
-                      checked={form.terms_agree}
-                      onChange={handleChange}
                       required
+                      checked={formData.terms_agree}
+                      onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
                     />
                     <span className="text-sm text-gray-700">
-                      I agree to the{" "}
+                      {t('registerMenu.agreeTo')} {" "}
                       <a
                         href="terms_conditions.php"
                         className="text-pet-primary hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Terms of Service
+                        {t('registerMenu.termsOfService')}
                       </a>{" "}
-                      and{" "}
+                      {t('registerMenu.and')} {" "}
                       <a
                         href="privacy_policy.php"
                         className="text-pet-primary hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Privacy Policy
+                        {t('registerMenu.privacyPolicy')}
                       </a>{" "}
                       *
                     </span>
                   </label>
-
-                  <label className="flex items-start" htmlFor="info_accurate">
+                  <label className="flex items-start">
                     <input
                       type="checkbox"
-                      id="info_accurate"
                       name="info_accurate"
-                      checked={form.info_accurate}
-                      onChange={handleChange}
                       required
+                      checked={formData.info_accurate}
+                      onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
                     />
                     <span className="text-sm text-gray-700">
-                      I certify that all information provided is accurate and complete *
+                      {t('registerMenu.certifyAccurate')} *
                     </span>
                   </label>
-
-                  <label className="flex items-start" htmlFor="pet_ownership">
+                  <label className="flex items-start">
                     <input
                       type="checkbox"
-                      id="pet_ownership"
                       name="pet_ownership"
-                      checked={form.pet_ownership}
-                      onChange={handleChange}
                       required
-                      className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
-                    />
-                    <span className="text-sm text-gray-700">I confirm that I am the legal owner of this pet *</span>
-                  </label>
-
-                  <label className="flex items-start" htmlFor="email_updates">
-                    <input
-                      type="checkbox"
-                      id="email_updates"
-                      name="email_updates"
-                      checked={form.email_updates}
+                      checked={formData.pet_ownership}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
                     />
                     <span className="text-sm text-gray-700">
-                      I would like to receive email updates about my pet's registration and important service announcements
+                      {t('registerMenu.confirmOwnership')} *
+                    </span>
+                  </label>
+                  <label className="flex items-start">
+                    <input
+                      type="checkbox"
+                      name="email_updates"
+                      checked={formData.email_updates}
+                      onChange={handleChange}
+                      className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
+                    />
+                    <span className="text-sm text-gray-700">
+                      {t('registerMenu.emailUpdates')}
                     </span>
                   </label>
                 </div>
@@ -693,11 +642,13 @@ const PetRegistrationForm: React.FC = () => {
                 type="submit"
                 className="bg-gradient-to-r from-pet-primary to-pet-secondary text-white px-12 py-4 rounded-xl text-lg font-bold hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
               >
-                Complete Pet Registration
+                {t('registerMenu.submitButton')}
               </button>
-              <p className="text-sm text-gray-500 mt-4">Lifetime protection for your beloved pet</p>
+              <p className="text-sm text-gray-500 mt-4">
+                {t('registerMenu.submitNote')}
+              </p>
             </div>
-         </form>
+          </form>
         </div>
 
         {/* Security Notice */}
@@ -712,9 +663,11 @@ const PetRegistrationForm: React.FC = () => {
               <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path>
             </svg>
             <div>
-              <h4 className="font-semibold text-green-800">Your Information is Secure</h4>
+              <h4 className="font-semibold text-green-800">
+                {t('registerMenu.securityTitle')}
+              </h4>
               <p className="text-green-700 text-sm">
-                All data is encrypted and stored securely. We never share your personal information with unauthorized parties.
+                {t('registerMenu.securityDesc')}
               </p>
             </div>
           </div>
@@ -724,4 +677,4 @@ const PetRegistrationForm: React.FC = () => {
   );
 };
 
-export default PetRegistrationForm;
+export default RegisterMenu;

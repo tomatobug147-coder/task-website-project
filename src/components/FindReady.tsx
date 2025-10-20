@@ -15,13 +15,13 @@ const FindReady: React.FC = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
-            onClick={() => navigate('/registerpet')}
+            onClick={() => { navigate('/registerpet'); window.scrollTo(0, 0); }}
             className="bg-pet-primary text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-blue-600 transition-colors"
           >
             {t('findReady.registerPet')}
           </button>
           <button
-            onClick={() => navigate('/about')}
+            onClick={() => { navigate('/about'); window.scrollTo(0, 0); }}
             className="bg-gray-600 text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-gray-700 transition-colors"
           >
             {t('findReady.learnMore')}
