@@ -38,6 +38,23 @@ const LostFoundFoundreport: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const response = await fetch('http://localhost:5000/process-found-pet.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await response.json();
+    console.log(result.message);
+  } catch (error) {
+    console.error('Error submitting form:', error);
+  }
+};
+
+
   return (
     <section id="report-found" className="py-16 bg-yellow-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -53,6 +70,7 @@ const LostFoundFoundreport: React.FC = () => {
           </div>
 
           <form
+            onSubmit={handleSubmit}
             method="POST"
             action="process-found-pet.php"
             className="px-8 py-8"

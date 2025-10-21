@@ -1,65 +1,73 @@
 import React, { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import axios from "axios";
+
 
 const RegisterMenu: React.FC = () => {
   const navigate = useNavigate();
   const { t, setLanguage, language } = useLanguage();
   const [formData, setFormData] = useState({
-    full_name: "",
-    national_id: "",
+    fullName: "",
+    nationalIdNumber: "",
     email: "",
     password: "",
-    confirm_password: "",
-    phone: "",
-    alt_phone: "",
-    address: "",
+    confirmPassword: "",
+    phoneNumber: "",
+    alternativePhone: "",
+    streetAddress: "",
     city: "",
     country: "",
-    microchip_number: "",
-    pet_name: "",
-    pet_type: "",
+    microchipNumber: "",
+    petName: "",
+    petType: "",
     breed: "",
-    pet_sex: "",
-    pet_color: "",
-    pet_age: "",
-    pet_weight: "",
-    special_markings: "",
-    vet_clinic: "",
-    vet_phone: "",
-    microchip_date: "",
-    microchip_location: "",
-    emergency_name: "",
-    emergency_phone: "",
-    emergency_relationship: "",
-    terms_agree: false,
-    info_accurate: false,
-    pet_ownership: false,
-    email_updates: false,
+    sex: "",
+    primaryColor: "",
+    age: "",
+    weight: "",
+    specialMarkings: "",
+    veterinaryClinicName: "",
+    veterinaryPhone: "",
+    microchipImplantDate: "",
+    microchipLocation: "",
+    emergencyContactName: "",
+    emergencyContactPhone: "",
+    relationshipToOwner: "",
+    termsAccepted: false,
+    dataAccuracyConfirmed: false,
+    ownershipConfirmed: false,
+    emailUpdatesOptIn: false,
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    const target = e.target as HTMLInputElement;
-    const { name, value, type } = target;
-    const checked = target.checked;
+    const target = e.target;
+    const { name, value } = target;
+    const type = (target as HTMLInputElement).type;
+    const checked = (target as HTMLInputElement).checked;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Handle form submission, e.g., send to API or PHP endpoint
-    console.log("Form submitted:", formData);
-    // Navigate to success page
-    navigate("/registersuccess");
-  };
-
-  const handleLanguageChange = () => {
-    setLanguage(language === 'en' ? 'ar' : 'en');
+    setIsSubmitting(false);
+    try {
+      // console.log(formData);
+      const response = await axios.post('http://localhost:5000/api/register', formData);
+      console.log('Created:', response.data);
+      navigate("/registersuccess");
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -76,7 +84,7 @@ const RegisterMenu: React.FC = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="px-8 py-8" noValidate>
+          <form onSubmit={handleSubmit} className="px-8 py-8">
             {/* Owner Information Section */}
             <div className="mb-12">
               <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
@@ -94,9 +102,9 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="full_name"
+                    name="fullName"
                     required
-                    value={formData.full_name}
+                    value={formData.fullName}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.fullNamePlaceholder')}
@@ -110,9 +118,9 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="national_id"
+                    name="nationalIdNumber"
                     required
-                    value={formData.national_id}
+                    value={formData.nationalIdNumber}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.nationalIdPlaceholder')}
@@ -163,10 +171,10 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="password"
-                    name="confirm_password"
+                    name="confirmPassword"
                     required
                     minLength={8}
-                    value={formData.confirm_password}
+                    value={formData.confirmPassword}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.confirmPasswordPlaceholder')}
@@ -180,9 +188,9 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="tel"
-                    name="phone"
+                    name="phoneNumber"
                     required
-                    value={formData.phone}
+                    value={formData.phoneNumber}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.phonePlaceholder')}
@@ -196,8 +204,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="tel"
-                    name="alt_phone"
-                    value={formData.alt_phone}
+                    name="alternativePhone"
+                    value={formData.alternativePhone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.altPhonePlaceholder')}
@@ -211,9 +219,9 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="address"
+                    name="streetAddress"
                     required
-                    value={formData.address}
+                    value={formData.streetAddress}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.addressPlaceholder')}
@@ -271,11 +279,11 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="microchip_number"
+                    name="microchipNumber"
                     required
                     maxLength={15}
                     pattern="\d{15}"
-                    value={formData.microchip_number}
+                    value={formData.microchipNumber}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200 font-mono text-lg"
                     placeholder="123456789012345"
@@ -292,9 +300,9 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="pet_name"
+                    name="petName"
                     required
-                    value={formData.pet_name}
+                    value={formData.petName}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.petNamePlaceholder')}
@@ -307,9 +315,9 @@ const RegisterMenu: React.FC = () => {
                     {t('registerMenu.petType')}
                   </label>
                   <select
-                    name="pet_type"
+                    name="petType"
                     required
-                    value={formData.pet_type}
+                    value={formData.petType}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   >
@@ -345,9 +353,9 @@ const RegisterMenu: React.FC = () => {
                     {t('registerMenu.sex')}
                   </label>
                   <select
-                    name="pet_sex"
+                    name="sex"
                     required
-                    value={formData.pet_sex}
+                    value={formData.sex}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   >
@@ -366,9 +374,9 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="pet_color"
+                    name="primaryColor"
                     required
-                    value={formData.pet_color}
+                    value={formData.primaryColor}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder="e.g., Golden, Black, Brown &amp; White"
@@ -382,8 +390,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="pet_age"
-                    value={formData.pet_age}
+                    name="age"
+                    value={formData.age}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.agePlaceholder')}
@@ -397,8 +405,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="pet_weight"
-                    value={formData.pet_weight}
+                    name="weight"
+                    value={formData.weight}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.weightPlaceholder')}
@@ -411,9 +419,9 @@ const RegisterMenu: React.FC = () => {
                     {t('registerMenu.specialMarkings')}
                   </label>
                   <textarea
-                    name="special_markings"
+                    name="specialMarkings"
                     rows={3}
-                    value={formData.special_markings}
+                    value={formData.specialMarkings}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.specialMarkingsPlaceholder')}
@@ -439,8 +447,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="vet_clinic"
-                    value={formData.vet_clinic}
+                    name="veterinaryClinicName"
+                    value={formData.veterinaryClinicName}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.vetClinicPlaceholder')}
@@ -454,8 +462,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="tel"
-                    name="vet_phone"
-                    value={formData.vet_phone}
+                    name="veterinaryPhone"
+                    value={formData.veterinaryPhone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.vetPhonePlaceholder')}
@@ -469,8 +477,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="date"
-                    name="microchip_date"
-                    value={formData.microchip_date}
+                    name="microchipImplantDate"
+                    value={formData.microchipImplantDate}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   />
@@ -482,8 +490,8 @@ const RegisterMenu: React.FC = () => {
                     {t('registerMenu.microchipLocation')}
                   </label>
                   <select
-                    name="microchip_location"
-                    value={formData.microchip_location}
+                    name="microchipLocation"
+                    value={formData.microchipLocation}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   >
@@ -516,8 +524,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="emergency_name"
-                    value={formData.emergency_name}
+                    name="emergencyContactName"
+                    value={formData.emergencyContactName}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.emergencyNamePlaceholder')}
@@ -531,8 +539,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="tel"
-                    name="emergency_phone"
-                    value={formData.emergency_phone}
+                    name="emergencyContactPhone"
+                    value={formData.emergencyContactPhone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.emergencyPhonePlaceholder')}
@@ -546,8 +554,8 @@ const RegisterMenu: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="emergency_relationship"
-                    value={formData.emergency_relationship}
+                    name="relationshipToOwner"
+                    value={formData.relationshipToOwner}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     placeholder={t('registerMenu.relationshipPlaceholder')}
@@ -566,9 +574,9 @@ const RegisterMenu: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="terms_agree"
+                      name="termsAccepted"
                       required
-                      checked={formData.terms_agree}
+                      checked={formData.termsAccepted}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
                     />
@@ -597,9 +605,9 @@ const RegisterMenu: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="info_accurate"
+                      name="dataAccuracyConfirmed"
                       required
-                      checked={formData.info_accurate}
+                      checked={formData.dataAccuracyConfirmed}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
                     />
@@ -610,9 +618,9 @@ const RegisterMenu: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="pet_ownership"
+                      name="ownershipConfirmed"
                       required
-                      checked={formData.pet_ownership}
+                      checked={formData.ownershipConfirmed}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
                     />
@@ -623,8 +631,8 @@ const RegisterMenu: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="email_updates"
-                      checked={formData.email_updates}
+                      name="emailUpdatesOptIn"
+                      checked={formData.emailUpdatesOptIn}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-pet-primary focus:ring-pet-primary border-gray-300 rounded"
                     />
@@ -640,9 +648,11 @@ const RegisterMenu: React.FC = () => {
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-gradient-to-r from-pet-primary to-pet-secondary text-white px-12 py-4 rounded-xl text-lg font-bold hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                disabled={isSubmitting}
+                className={`bg-gradient-to-r from-pet-primary to-pet-secondary text-white px-12 py-4 rounded-xl text-lg font-bold hover:shadow-2xl transform hover:scale-105 transition-all duration-200 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
               >
-                {t('registerMenu.submitButton')}
+                {isSubmitting ? t('registerMenu.submitting') || 'Submitting...' : t('registerMenu.submitButton')}
               </button>
               <p className="text-sm text-gray-500 mt-4">
                 {t('registerMenu.submitNote')}
@@ -658,7 +668,7 @@ const RegisterMenu: React.FC = () => {
               className="w-6 h-6 text-green-600 mr-3"
               fill="currentColor"
               viewBox="0 0 24 24"
-              aria-hidden="true"
+              aria-hidden="false"
             >
               <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"></path>
             </svg>

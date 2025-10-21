@@ -4,9 +4,37 @@ import LanguageTransitionWrapper from './LanguageTransitionWrapper';
 
 const POLog: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { t, isRTL } = useLanguage();
 
   const togglePassword = () => setShowPassword(!showPassword);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('api/pets/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const result = await response.json();
+      if (result.success) {
+        // Handle success, e.g., redirect or update state
+        console.log('Login successful');
+      } else {
+        setError(result.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <LanguageTransitionWrapper>
@@ -31,7 +59,14 @@ const POLog: React.FC = () => {
           </div>
 
           {/* Login Form */}
-          <form method="POST" action="process-owner-login.php" className="px-8 py-8 space-y-6">
+          <form onSubmit={handleSubmit} className="px-8 py-8 space-y-6">
+            {/* Error Display */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+
             {/* Email Field */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">{t('petOwnerLogin.email')}</label>
@@ -48,7 +83,8 @@ const POLog: React.FC = () => {
                 </div>
                 <input
                   type="email"
-                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   placeholder={t('petOwnerLogin.emailPlaceholder')}
@@ -72,7 +108,8 @@ const POLog: React.FC = () => {
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   placeholder={t('petOwnerLogin.passwordPlaceholder')}
@@ -133,18 +170,26 @@ const POLog: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-pet-primary to-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-pet-primary to-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="flex items-center justify-center">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                  />
-                </svg>
-{t('petOwnerLogin.loginButton')}
+                {loading ? (
+                  <svg className="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                    />
+                  </svg>
+                )}
+                {loading ? t('petOwnerLogin.loggingIn') : t('petOwnerLogin.loginButton')}
               </span>
             </button>
 

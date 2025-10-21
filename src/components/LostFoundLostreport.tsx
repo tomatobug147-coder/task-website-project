@@ -48,7 +48,7 @@ const LostFoundLostreport: React.FC = () => {
       }
     }
 
-    fetch("process-lost-pet.php", {
+    fetch("https://localhost:5000/report-lost-pet", {
       method: "POST",
       body: data,
     })

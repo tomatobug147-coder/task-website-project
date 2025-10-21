@@ -12,32 +12,35 @@ const VeterinaryClinicRegistration: React.FC = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirm_password: "",
-    clinic_name: "",
+    confirmPassword: "",
+    clinicName: "",
     contact_person: "",
-    license_number: "",
+    veterinaryLicenseNumber: "",
     phone: "",
     alt_phone: "",
     website: "",
-    years_in_practice: "",
-    address: "",
+    yearsInPractice: "",
+    streetAddress: "",
     city: "",
-    state: "",
-    postal_code: "",
+    stateProvince: "",
+    postalCode: "",
     country: "",
-    hours_of_operation: "",
-    emergency_services: false,
+    operatingHours: "Monday: 8:00 AM - 6:00 PM\nTuesday: 8:00 AM - 6:00 PM\nWednesday: 8:00 AM - 6:00 PM\nThursday: 8:00 AM - 6:00 PM\nFriday: 8:00 AM - 6:00 PM\nSaturday: 9:00 AM - 4:00 PM\nSunday: Closed",
+    provides24HourEmergency: false,
     microchip_services: true,
-    has_scanner: true,
-    scanner_types: "",
-    services_offered: "",
+    hasMicrochipScanners: true,
+    scannerTypes: "",
+    additionalServices: "",
     specializations: "",
-    terms_agree: false,
-    info_accurate: false,
-    licensed_professional: false,
-    data_usage_consent: false,
-    email_updates: false,
+    termsAccepted: false,
+    dataAccuracyConfirmed: false,
+    professionalConfirmation: false,
+    consentForReferrals: false,
+    emailUpdatesOptIn: false,
   });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -50,10 +53,33 @@ const VeterinaryClinicRegistration: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Process form submission logic here, e.g., API call
-    navigate('/registersuccessvet');
+    setIsLoading(true);
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/veterinary/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        navigate('/registersuccessvet');
+      } else {
+        setErrorMessage(result.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setErrorMessage('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -125,10 +151,10 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   </label>
                   <input
                     type="password"
-                    name="confirm_password"
+                    name="confirmPassword"
                     required
                     minLength={8}
-                    value={formData.confirm_password}
+                    value={formData.confirmPassword}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                     placeholder={t('vetRegister.passwordPlaceholder')}
@@ -154,9 +180,9 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="clinic_name"
+                    name="clinicName"
                     required
-                    value={formData.clinic_name}
+                    value={formData.clinicName}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                     placeholder={t('vetRegister.clinicNamePlaceholder')}
@@ -186,8 +212,8 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="license_number"
-                    value={formData.license_number}
+                    name="veterinaryLicenseNumber"
+                    value={formData.veterinaryLicenseNumber}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                     placeholder={t('vetRegister.licenseNumberPlaceholder')}
@@ -228,7 +254,7 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   />
                 </div>
 
-                {/* Website */}
+                {/* website */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     {t('vetRegister.website')}
@@ -250,10 +276,10 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   </label>
                   <input
                     type="number"
-                    name="years_in_practice"
+                    name="yearsInPractice"
                     min={0}
                     max={50}
-                    value={formData.years_in_practice}
+                    value={formData.yearsInPractice}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                     placeholder={t('vetRegister.yearsPracticePlaceholder')}
@@ -272,19 +298,19 @@ const VeterinaryClinicRegistration: React.FC = () => {
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Address */}
+                {/* streetAddress */}
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    {t('vetRegister.address')} *
+                    {t('vetRegister.streetAddress')} *
                   </label>
                   <input
                     type="text"
-                    name="address"
+                    name="streetAddress"
                     required
-                    value={formData.address}
+                    value={formData.streetAddress}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
-                    placeholder={t('vetRegister.addressPlaceholder')}
+                    placeholder={t('vetRegister.streetAddressPlaceholder')}
                   />
                 </div>
 
@@ -304,18 +330,18 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   />
                 </div>
 
-                {/* State/Province */}
+                {/* stateProvince/Province */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    {t('vetRegister.state')}
+                    {t('vetRegister.stateProvince')}
                   </label>
                   <input
                     type="text"
-                    name="state"
-                    value={formData.state}
+                    name="stateProvince"
+                    value={formData.stateProvince}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
-                    placeholder={t('vetRegister.statePlaceholder')}
+                    placeholder={t('vetRegister.stateProvincePlaceholder')}
                   />
                 </div>
 
@@ -326,8 +352,8 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="postal_code"
-                    value={formData.postal_code}
+                    name="postalCode"
+                    value={formData.postalCode}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                     placeholder={t('vetRegister.postalCodePlaceholder')}
@@ -368,10 +394,10 @@ const VeterinaryClinicRegistration: React.FC = () => {
                     {t('vetRegister.operatingHours')} *
                   </label>
                   <textarea
-                    name="hours_of_operation"
+                    name="operatingHours"
                     rows={7}
                     required
-                    value={formData.hours_of_operation}
+                    value={formData.operatingHours}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                     placeholder={t('vetRegister.hoursPlaceholder')}
@@ -386,8 +412,8 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   <label className="flex items-center">
                     <input
                       type="checkbox"
-                      name="emergency_services"
-                      checked={formData.emergency_services}
+                      name="provides24HourEmergency"
+                      checked={formData.provides24HourEmergency}
                       onChange={handleChange}
                       value="1"
                       className="mr-3 h-4 w-4 text-green-600 focus:ring-green-600 border-gray-300 rounded"
@@ -432,8 +458,8 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   <label className="flex items-center mb-4">
                     <input
                       type="checkbox"
-                      name="has_scanner"
-                      checked={formData.has_scanner}
+                      name="hasMicrochipScanners"
+                      checked={formData.hasMicrochipScanners}
                       onChange={handleChange}
                       value="1"
                       className="mr-3 h-4 w-4 text-green-600 focus:ring-green-600 border-gray-300 rounded"
@@ -451,8 +477,8 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    name="scanner_types"
-                    value={formData.scanner_types}
+                    name="scannerTypes"
+                    value={formData.scannerTypes}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                     placeholder={t('vetRegister.scannerTypesPlaceholder')}
@@ -468,9 +494,9 @@ const VeterinaryClinicRegistration: React.FC = () => {
                     {t('vetRegister.additionalServices')}
                   </label>
                   <textarea
-                    name="services_offered"
+                    name="additionalServices"
                     rows={3}
-                    value={formData.services_offered}
+                    value={formData.additionalServices}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                     placeholder={t('vetRegister.additionalServicesPlaceholder')}
@@ -504,9 +530,9 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="terms_agree"
+                      name="termsAccepted"
                       required
-                      checked={formData.terms_agree}
+                      checked={formData.termsAccepted}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-600 border-gray-300 rounded"
                     />
@@ -535,9 +561,9 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="info_accurate"
+                      name="dataAccuracyConfirmed"
                       required
-                      checked={formData.info_accurate}
+                      checked={formData.dataAccuracyConfirmed}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-600 border-gray-300 rounded"
                     />
@@ -548,9 +574,9 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="licensed_professional"
+                      name="professionalConfirmation"
                       required
-                      checked={formData.licensed_professional}
+                      checked={formData.professionalConfirmation}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-600 border-gray-300 rounded"
                     />
@@ -561,9 +587,9 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="data_usage_consent"
+                      name="consentForReferrals"
                       required
-                      checked={formData.data_usage_consent}
+                      checked={formData.consentForReferrals}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-600 border-gray-300 rounded"
                     />
@@ -574,8 +600,8 @@ const VeterinaryClinicRegistration: React.FC = () => {
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      name="email_updates"
-                      checked={formData.email_updates}
+                      name="emailUpdatesOptIn"
+                      checked={formData.emailUpdatesOptIn}
                       onChange={handleChange}
                       className="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-600 border-gray-300 rounded"
                     />
@@ -587,13 +613,34 @@ const VeterinaryClinicRegistration: React.FC = () => {
               </div>
             </div>
 
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center">
+                  <svg
+                    className="w-5 h-5 text-red-600 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  </svg>
+                  <span className="text-red-800 text-sm">{errorMessage}</span>
+                </div>
+              </div>
+            )}
+
             {/* Submit Button */}
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-12 py-4 rounded-xl text-lg font-bold hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                disabled={isLoading}
+                className={`bg-gradient-to-r from-green-600 to-blue-600 text-white px-12 py-4 rounded-xl text-lg font-bold hover:shadow-2xl transform hover:scale-105 transition-all duration-200 ${
+                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
-                {t('vetRegister.submitButton')}
+                {isLoading ? t('common.loading') || 'Submitting...' : t('vetRegister.submitButton')}
               </button>
               <p className="text-sm text-gray-500 mt-4">
                 {t('vetRegister.submitNote')}

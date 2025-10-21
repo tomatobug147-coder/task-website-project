@@ -1,16 +1,48 @@
 import React, { useState, FormEvent } from "react";
+import axios from "axios";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const ContactSection: React.FC = () => {
   const { t } = useLanguage();
   const [subject, setSubject] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
 
   // Show microchip input only if subject related (example conditional)
   const showMicrochip = subject === "microchip" || subject === "search";
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Implement form submission logic e.g. POST to process-contact.php or API
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    const formData = new FormData(e.currentTarget);
+    const contactData = {
+      firstName: formData.get('firstName'),
+      lastName: formData.get('lastName'),
+      email: formData.get('email'),
+      phoneNumber: formData.get('phoneNumber'),
+      subject: formData.get('subject'),
+      microchipNumber: formData.get('microchip_number') || undefined,
+      priorityLevelLevel: formData.get('priorityLevel'),
+      message: formData.get('message')
+    };
+
+    try {
+      const response = await axios.post('/api/contacts', contactData);
+      if (response.data.success) {
+        setSubmitMessage(t('contact.successMessage') || "Message sent successfully!");
+        e.currentTarget.reset();
+        setSubject("");
+      } else {
+        setSubmitMessage(response.data.message || "Failed to send message.");
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setSubmitMessage("An error occurred while sending your message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -29,25 +61,25 @@ const ContactSection: React.FC = () => {
                 {/* Contact Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="first_name">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="firstName">
                       {t('contact.firstName')}
                     </label>
                     <input
-                      id="first_name"
+                      id="firstName"
                       type="text"
-                      name="first_name"
+                      name="firstName"
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="last_name">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="lastName">
                       {t('contact.lastName')}
                     </label>
                     <input
-                      id="last_name"
+                      id="lastName"
                       type="text"
-                      name="last_name"
+                      name="lastName"
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     />
@@ -68,13 +100,13 @@ const ContactSection: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="phone">
-                      {t('contact.phone')}
+                    <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="phoneNumber">
+                      {t('contact.phoneNumber')}
                     </label>
                     <input
-                      id="phone"
+                      id="phoneNumber"
                       type="tel"
-                      name="phone"
+                      name="phoneNumber"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                     />
                   </div>
@@ -126,22 +158,22 @@ const ContactSection: React.FC = () => {
                   </div>
                 )}
 
-                {/* Priority Level */}
+                {/* priorityLevel Level */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="priority">
-                    {t('contact.priorityLevel')}
+                  <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="priorityLevel">
+                    {t('contact.priorityLevelLevel')}
                   </label>
                   <select
-                    id="priority"
-                    name="priority"
+                    id="priorityLevel"
+                    name="priorityLevel"
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   >
-                    <option value="">{t('contact.selectPriority')}</option>
-                    <option value="emergency">{t('contact.emergencyPriority')}</option>
-                    <option value="urgent">{t('contact.urgentPriority')}</option>
-                    <option value="normal">{t('contact.normalPriority')}</option>
-                    <option value="low">{t('contact.lowPriority')}</option>
+                    <option value="">{t('contact.selectpriorityLevel')}</option>
+                    <option value="emergency">{t('contact.emergencypriorityLevel')}</option>
+                    <option value="urgent">{t('contact.urgentpriorityLevel')}</option>
+                    <option value="normal">{t('contact.normalpriorityLevel')}</option>
+                    <option value="low">{t('contact.lowpriorityLevel')}</option>
                   </select>
                 </div>
 
@@ -163,10 +195,17 @@ const ContactSection: React.FC = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-pet-primary bg-blue-600 text-white py-4 rounded-lg text-lg font-bold hover:shadow-lg transition-all duration-200"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-pet-primary bg-blue-600 text-white py-4 rounded-lg text-lg font-bold hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {t('contact.sendButton')}
+                  {isSubmitting ? (t('contact.sending') || "Sending...") : t('contact.sendButton')}
                 </button>
+
+                {submitMessage && (
+                  <p className={`text-sm text-center ${submitMessage.includes('success') ? 'text-green-600' : 'text-red-600'}`}>
+                    {submitMessage}
+                  </p>
+                )}
 
                 <p className="text-sm text-gray-500 text-center">
                   {t('contact.responseNote')}

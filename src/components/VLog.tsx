@@ -1,12 +1,44 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const VLog: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({ clinic_id: '', username: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const { t, isRTL } = useLanguage();
 
   const toggleClinicPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess(false);
+
+    try {
+      const response = await axios.post('/api/veterinaries/login', formData);
+      if (response.data.success) {
+        setSuccess(true);
+        // Handle successful login, e.g., redirect or store token
+      } else {
+        setError(response.data.message || 'Login failed');
+      }
+    } catch (err) {
+      console.error('Veterinary login error:', err);
+      setError('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,7 +63,7 @@ const VLog: React.FC = () => {
           </div>
 
           {/* Login Form */}
-          <form method="POST" action="process-clinic-login.php" className="px-8 py-8 space-y-6" id="clinicLoginForm">
+          <form onSubmit={handleSubmit} className="px-8 py-8 space-y-6" id="clinicLoginForm">
             {/* Clinic ID */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">{t('vLog.clinicId')}</label>
@@ -49,6 +81,8 @@ const VLog: React.FC = () => {
                  <input
                    type="text"
                    name="clinic_id"
+                   value={formData.clinic_id}
+                   onChange={handleInputChange}
                    required
                    className={`w-full py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pet-secondary focus:border-transparent transition-all duration-200 ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
                    placeholder={t('vLog.clinicIdPlaceholder')}
@@ -74,6 +108,8 @@ const VLog: React.FC = () => {
                  <input
                    type="text"
                    name="username"
+                   value={formData.username}
+                   onChange={handleInputChange}
                    required
                    className={`w-full py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pet-secondary focus:border-transparent transition-all duration-200 ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
                    placeholder={t('vLog.usernamePlaceholder')}
@@ -98,6 +134,8 @@ const VLog: React.FC = () => {
                  <input
                    type={showPassword ? 'text' : 'password'}
                    name="password"
+                   value={formData.password}
+                   onChange={handleInputChange}
                    required
                    id="clinicPassword"
                    className={`w-full py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pet-secondary focus:border-transparent transition-all duration-200 ${isRTL ? 'pr-10 pl-12' : 'pl-10 pr-12'}`}
@@ -163,21 +201,42 @@ const VLog: React.FC = () => {
                 </a>
              </div>
 
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+
+            {/* Success Message */}
+            {success && (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                <p className="text-sm text-green-700">Login successful!</p>
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-pet-secondary to-green-600 text-white py-3 rounded-xl text-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-pet-secondary to-green-600 text-white py-3 rounded-xl text-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className={`flex items-center justify-center ${isRTL ? 'flex-row-reverse' : ''}`}>
-                <svg className={`w-5 h-5 ${isRTL ? 'ml-2' : 'mr-2'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path
-                     strokeLinecap="round"
-                     strokeLinejoin="round"
-                     strokeWidth={2}
-                     d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                   />
-                 </svg>
-                 {t('vLog.accessDashboard')}
+                {loading ? (
+                  <svg className={`w-5 h-5 ${isRTL ? 'ml-2' : 'mr-2'} animate-spin`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                ) : (
+                  <svg className={`w-5 h-5 ${isRTL ? 'ml-2' : 'mr-2'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                    />
+                  </svg>
+                )}
+                {loading ? 'Logging in...' : t('vLog.accessDashboard')}
               </span>
             </button>
 
