@@ -40,6 +40,8 @@ const RegisterMenu: React.FC = () => {
     emailUpdatesOptIn: false,
   });
 
+  const [isPetMicrochipped, setIsPetMicrochipped] = useState<boolean | null>(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
@@ -84,8 +86,59 @@ const RegisterMenu: React.FC = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="px-8 py-8">
-            {/* Owner Information Section */}
+          {/* Microchip Question */}
+          {isPetMicrochipped === null && (
+            <div className="px-8 py-8">
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-gray-800 mb-6">
+                  {t('registerMenu.isPetMicrochipped')}
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsPetMicrochipped(true)}
+                    className="bg-pet-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-pet-primary/90 transition-colors"
+                  >
+                    {t('registerMenu.yesMicrochipped')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsPetMicrochipped(false)}
+                    className="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                  >
+                    {t('registerMenu.noMicrochipped')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Microchip Required Message */}
+          {isPetMicrochipped === false && (
+            <div className="px-8 py-8">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                <div className="text-yellow-800 mb-4">
+                  <svg className="w-12 h-12 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                  <p className="text-lg font-semibold mb-2">Microchipping Required</p>
+                  <p className="text-sm">{t('registerMenu.microchipRequired')}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsPetMicrochipped(null)}
+                  className="bg-pet-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-pet-primary/90 transition-colors"
+                >
+                  {t('registerMenu.proceedToRegistration')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Registration Form */}
+          {isPetMicrochipped === true && (
+            <form onSubmit={handleSubmit} className="px-8 py-8">
+              {/* Owner Information Section */}
             <div className="mb-12">
               <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
                 <span className="bg-pet-primary text-white w-8 h-8 rounded-full inline-flex items-center justify-center text-sm font-bold mr-3">
@@ -657,8 +710,9 @@ const RegisterMenu: React.FC = () => {
               <p className="text-sm text-gray-500 mt-4">
                 {t('registerMenu.submitNote')}
               </p>
-            </div>
-          </form>
+              </div>
+            </form>
+          )}
         </div>
 
         {/* Security Notice */}

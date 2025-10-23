@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Header = () => {
   const location = useLocation();
+const navigate = useNavigate();
+const isMobile = useIsMobile();
   const { t, isRTL, language, setLanguage, isTransitioning } = useLanguage();
   const [activeNav, setActiveNav] = useState("/");
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -19,7 +22,31 @@ const Header = () => {
     setLanguage(language === 'en' ? 'ar' : 'en');
   };
 
+const navOptions = [
+  { value: "/", label: t('nav.home') },
+  { value: "/about", label: t('nav.about') },
+  { value: "/findclinic", label: t('nav.findClinic') },
+  { value: "/search", label: t('nav.search') },
+  { value: "/lostfound", label: t('nav.lostFound') },
+  { value: "/successstories", label: t('nav.successStories') },
+  { value: "/contact", label: t('nav.contact') },
+  { value: "register", label: t('nav.register') },
+  { value: "login", label: t('nav.login') },
+];
   const targetLang = language === 'en' ? t('common.toArabic') : t('common.toEnglish');
+const handleNavChange = (value: string) => {
+  if (value === "register") {
+    setMobileOpen(true);
+    setMobileRegisterOpen(true);
+  } else if (value === "login") {
+    setMobileOpen(true);
+    setMobileLoginOpen(true);
+  } else {
+    navigate(value);
+    setActiveNav(value);
+    setMobileOpen(false);
+  }
+};
 
   const LanguageSelect = () => {
     return (
@@ -100,8 +127,35 @@ const Header = () => {
               </div>
             </div>
           </div>
+{isMobile && (
 
-          {/* Desktop Navigation */}
+  <Select onValueChange={handleNavChange}>
+
+    <SelectTrigger className="w-28 ml-[-90px] mt-[-10px] bg-white border border-gray-300 rounded-lg text-gray-700">
+
+      <SelectValue placeholder="Select page" />
+
+    </SelectTrigger>
+
+    <SelectContent>
+
+      {navOptions.map(option => (
+
+        <SelectItem key={option.value} value={option.value}>
+
+          {option.label}
+
+        </SelectItem>
+
+      ))}
+
+    </SelectContent>
+
+  </Select>
+
+)}
+
+{!isMobile && (
           <div className="hidden lg:flex flex-1 justify-center">
             <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
               {[
@@ -147,8 +201,9 @@ const Header = () => {
               })}
             </div>
           </div>
+)}
 
-          {/* CTA Buttons */}
+{!isMobile && (
           <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
             {/* Language Select */}
             <LanguageSelect />
@@ -360,6 +415,7 @@ const Header = () => {
               )}
             </div>
           </div>
+)}
 
           {/* Mobile Menu Button */}
           <div className={`lg:hidden flex items-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
