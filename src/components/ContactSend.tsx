@@ -101,7 +101,7 @@ const ContactSection: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="phoneNumber">
-                      {t('contact.phoneNumber')}
+                      {t('contact.phone')}
                     </label>
                     <input
                       id="phoneNumber"
@@ -161,7 +161,7 @@ const ContactSection: React.FC = () => {
                 {/* priorityLevel Level */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="priorityLevel">
-                    {t('contact.priorityLevelLevel')}
+                    {t('contact.priorityLevel')}
                   </label>
                   <select
                     id="priorityLevel"
@@ -169,11 +169,11 @@ const ContactSection: React.FC = () => {
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pet-primary focus:border-transparent transition-all duration-200"
                   >
-                    <option value="">{t('contact.selectpriorityLevel')}</option>
-                    <option value="emergency">{t('contact.emergencypriorityLevel')}</option>
-                    <option value="urgent">{t('contact.urgentpriorityLevel')}</option>
-                    <option value="normal">{t('contact.normalpriorityLevel')}</option>
-                    <option value="low">{t('contact.lowpriorityLevel')}</option>
+                    <option value="">{t('contact.selectPriority')}</option>
+                    <option value="emergency">{t('contact.emergencyPriority')}</option>
+                    <option value="urgent">{t('contact.urgentPriority')}</option>
+                    <option value="normal">{t('contact.normalPriority')}</option>
+                    <option value="low">{t('contact.lowPriority')}</option>
                   </select>
                 </div>
 
